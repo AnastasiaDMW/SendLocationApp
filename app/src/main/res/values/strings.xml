@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SendLocationApp</string>
+    <string name="clear_logs">Очистить логи</string>
+    <string name="show_logs">Посмотреть логи</string>
+    <string name="finish">Завершить</string>
+    <string name="start">Начать</string>
+    <string name="home_title">Отслеживание местоположения</string>
+</resources>
