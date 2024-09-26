@@ -28,15 +28,21 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LocationForegroundService: Service() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
+
+    @Inject
+    lateinit var offlineLocationRepository: OfflineLocationRepository
 
     override fun onCreate() {
         super.onCreate()
@@ -88,9 +94,8 @@ class LocationForegroundService: Service() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             val currentDatTime = getCurrentDateTime()
-            val database = LocationDatabase.getDatabase(this)
             CoroutineScope(Dispatchers.IO).launch {
-                database.userLocationDao().addNewLocation(
+                offlineLocationRepository.addNewLocation(
                     UserLocation(
                         latitude = location.latitude.toString(),
                         longitude = location.longitude.toString(),

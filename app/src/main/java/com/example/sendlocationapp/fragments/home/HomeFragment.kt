@@ -19,16 +19,17 @@ import com.example.sendlocationapp.Constant.REQUEST_CODE_LOCATION
 import com.example.sendlocationapp.R
 import com.example.sendlocationapp.databinding.FragmentHomeBinding
 import com.example.sendlocationapp.service.LocationForegroundService
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var adapter: UserLocationAdapter? = null
 
     private var binding: FragmentHomeBinding? = null
-    private val homeViewModel: HomeViewModel by viewModels(
-        factoryProducer = { HomeViewModel.Factory }
-    )
+    private val homeViewModel: HomeViewModel by viewModels()
+
     private val sharedPreferences by lazy {
         requireContext().getSharedPreferences("location_state", Context.MODE_PRIVATE)
     }

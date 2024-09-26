@@ -6,13 +6,7 @@ import android.os.Build
 import com.example.sendlocationapp.data.DefaultAppContainer
 import com.example.sendlocationapp.database.LocationDatabase
 import com.example.sendlocationapp.service.LocationForegroundService
+import dagger.hilt.android.HiltAndroidApp
 
-class LocationApplication: Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-        val locationDao = LocationDatabase.getUserLocationDao(this)
-        DefaultAppContainer(locationDao)
-    }
-
-}
+@HiltAndroidApp
+class LocationApplication: Application()

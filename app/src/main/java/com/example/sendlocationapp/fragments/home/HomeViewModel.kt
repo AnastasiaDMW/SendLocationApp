@@ -14,11 +14,13 @@ import com.example.sendlocationapp.data.DefaultAppContainer
 import com.example.sendlocationapp.data.UserLocation
 import com.example.sendlocationapp.database.LocationDatabase
 import com.example.sendlocationapp.repository.OfflineLocationRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.IOException
+import javax.inject.Inject
 
-class HomeViewModel(
-    private val application: Application,
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val offlineLocationRepository: OfflineLocationRepository
 ): ViewModel() {
 
@@ -45,17 +47,17 @@ class HomeViewModel(
         }
     }
 
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as LocationApplication)
-                val locationDao = LocationDatabase.getUserLocationDao(application.applicationContext)
-                val appContainer = DefaultAppContainer(locationDao)
-                HomeViewModel(
-                    application,
-                    appContainer.offlineRecipeRepository
-                )
-            }
-        }
-    }
+//    companion object {
+//        val Factory: ViewModelProvider.Factory = viewModelFactory {
+//            initializer {
+//                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as LocationApplication)
+//                val locationDao = LocationDatabase.getUserLocationDao(application.applicationContext)
+//                val appContainer = DefaultAppContainer(locationDao)
+//                HomeViewModel(
+//                    application,
+//                    appContainer.offlineRecipeRepository
+//                )
+//            }
+//        }
+//    }
 }

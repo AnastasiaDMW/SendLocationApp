@@ -16,7 +16,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.sendlocationapp.Constant.REQUEST_CODE_LOCATION
 import com.example.sendlocationapp.databinding.ActivityMainBinding
 import com.example.sendlocationapp.service.LocationForegroundService
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null

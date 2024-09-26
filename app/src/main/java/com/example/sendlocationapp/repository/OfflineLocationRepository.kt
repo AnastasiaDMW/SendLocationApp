@@ -2,24 +2,31 @@ package com.example.sendlocationapp.repository
 
 import com.example.sendlocationapp.dao.LocationDao
 import com.example.sendlocationapp.data.UserLocation
+import com.example.sendlocationapp.fragments.home.UserLocationAdapter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class OfflineLocationRepository(
-    private val locationDao: LocationDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+class OfflineLocationRepository @Inject constructor(
+    private val locationDao: LocationDao
 ) {
 
     suspend fun getAllUserLocation(): List<UserLocation> {
-        return withContext(ioDispatcher){
+        return withContext(Dispatchers.IO){
             locationDao.getAllUserLocation().first()
         }
     }
 
+    suspend fun addNewLocation(userLocation: UserLocation) {
+        withContext(Dispatchers.IO) {
+            locationDao.addNewLocation(userLocation)
+        }
+    }
+
     suspend fun deleteAllLocation() {
-        withContext(ioDispatcher) {
+        withContext(Dispatchers.IO) {
             locationDao.deleteAllLocation()
         }
     }

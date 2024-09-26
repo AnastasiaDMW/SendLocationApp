@@ -13,24 +13,4 @@ abstract class LocationDatabase: RoomDatabase() {
 
     abstract fun userLocationDao(): LocationDao
 
-    companion object {
-
-        @Volatile
-        private var INSTANCE: LocationDatabase? = null
-
-        fun getDatabase(context: Context): LocationDatabase {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Room.databaseBuilder(
-                    context.applicationContext,
-                    LocationDatabase::class.java,
-                    Constant.DATABASE
-                ).build().also { INSTANCE = it }
-            }
-        }
-
-        fun getUserLocationDao(context: Context): LocationDao {
-            return getDatabase(context).userLocationDao()
-        }
-
-    }
 }
