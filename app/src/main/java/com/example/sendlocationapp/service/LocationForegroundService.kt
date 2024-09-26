@@ -19,7 +19,9 @@ import androidx.core.content.ContextCompat
 import com.example.sendlocationapp.Constant
 import com.example.sendlocationapp.Constant.ACTION_STOP_SERVICE
 import com.example.sendlocationapp.Constant.CHANNEL_ID
+import com.example.sendlocationapp.Constant.NOTIFICATION_NAME
 import com.example.sendlocationapp.Constant.REQUEST_CODE_LOCATION
+import com.example.sendlocationapp.Constant.SHARED_PREF_NAME
 import com.example.sendlocationapp.data.UserLocation
 import com.example.sendlocationapp.database.LocationDatabase
 import com.example.sendlocationapp.repository.OfflineLocationRepository
@@ -55,7 +57,7 @@ class LocationForegroundService: Service() {
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "Location Service",
+            NOTIFICATION_NAME,
             NotificationManager.IMPORTANCE_LOW
         )
         val notificationManager = getSystemService(NotificationManager::class.java)
@@ -64,9 +66,10 @@ class LocationForegroundService: Service() {
 
     private fun setupLocationUpdates() {
         val locationRequest = LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
             .setInterval(10000)
             .setFastestInterval(5000)
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setSmallestDisplacement(800f)
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 for (location in locationResult.locations) {
@@ -92,17 +95,28 @@ class LocationForegroundService: Service() {
 
     private fun handleLocationUpdate(location: Location) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            val sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE)
+            val oldLatitude = sharedPreferences.getString("latitude", null)
+            val oldLongitude = sharedPreferences.getString("longitude", null)
 
-            val currentDatTime = getCurrentDateTime()
-            CoroutineScope(Dispatchers.IO).launch {
-                offlineLocationRepository.addNewLocation(
-                    UserLocation(
-                        latitude = location.latitude.toString(),
-                        longitude = location.longitude.toString(),
-                        time = currentDatTime.first,
-                        date = currentDatTime.second
+            if (oldLatitude != location.latitude.toString() && oldLongitude != location.longitude.toString()) {
+
+                val currentDatTime = getCurrentDateTime()
+                CoroutineScope(Dispatchers.IO).launch {
+                    offlineLocationRepository.addNewLocation(
+                        UserLocation(
+                            latitude = location.latitude.toString(),
+                            longitude = location.longitude.toString(),
+                            time = currentDatTime.first,
+                            date = currentDatTime.second
+                        )
                     )
-                )
+                }
+                sharedPreferences.edit().apply {
+                    putString("latitude", location.latitude.toString())
+                    putString("longitude", location.longitude.toString())
+                    apply()
+                }
             }
         } else {
             ActivityCompat.requestPermissions(this as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE_LOCATION)

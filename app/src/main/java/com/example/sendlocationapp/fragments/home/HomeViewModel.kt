@@ -46,18 +46,4 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
-//    companion object {
-//        val Factory: ViewModelProvider.Factory = viewModelFactory {
-//            initializer {
-//                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as LocationApplication)
-//                val locationDao = LocationDatabase.getUserLocationDao(application.applicationContext)
-//                val appContainer = DefaultAppContainer(locationDao)
-//                HomeViewModel(
-//                    application,
-//                    appContainer.offlineRecipeRepository
-//                )
-//            }
-//        }
-//    }
 }
